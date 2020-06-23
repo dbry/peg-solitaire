@@ -1,0 +1,132 @@
+////////////////////////////////////////////////////////////////////////////
+//                             *** PEG ***                                //
+//                  Peg-Solitaire Random-Moves Solver                     //
+//                   Copyright (c) 2020 David Bryant                      //
+//                         All Rights Reserved                            //
+//      Distributed under the BSD Software License (see license.txt)      //
+////////////////////////////////////////////////////////////////////////////
+
+This program attempts to solve the English Peg Solitaire game by simply
+playing out complete games, choosing randomly from the the legal moves,
+until the puzzle is solved. This is a little closer to how a person might
+actually approach this.
+
+ English Peg-Solitaire board, notation, and initial position of pegs:
+
+   1 2 3 4 5 6 7
+ 1     ● ● ●
+ 2     ● ● ●
+ 3 ● ● ● ● ● ● ●
+ 4 ● ● ● ○ ● ● ●
+ 5 ● ● ● ● ● ● ●
+ 6     ● ● ●
+ 7     ● ● ●
+
+When playing random games, the most common result is 7 pegs remaining,
+which occurs about 25% of the time. For example:
+
+   1 2 3 4 5 6 7
+ 1     ○ ○ ●    
+ 2     ○ ○ ○    
+ 3 ● ○ ○ ○ ● ○ ○
+ 4 ○ ○ ○ ○ ○ ○ ●
+ 5 ● ○ ○ ○ ○ ○ ○
+ 6     ○ ○ ●    
+ 7     ● ○ ○    
+
+The shortest possible game is only 6 moves, leaving 26 pegs. This occurs a
+little less than 1% of the time:
+
+   1 2 3 4 5 6 7
+ 1     ● ○ ●    
+ 2     ● ○ ●    
+ 3 ● ● ● ● ● ● ●
+ 4 ● ○ ● ○ ● ○ ○
+ 5 ● ● ● ● ● ● ●
+ 6     ● ○ ●    
+ 7     ● ● ●    
+
+The winning game is leaving only a single peg, and this occurs less than once
+in 30 million games, so it can take a while (several minutes). Note that the
+final peg may either be at the center or in the middle of one of the edges,
+and they occur with equal frequency here because the choice is actually
+made in the last move. Here's a sample solution:
+
+   1 2 3 4 5 6 7
+ 1     ○ ○ ○    
+ 2     ○ ○ ○    
+ 3 ○ ○ ○ ○ ○ ○ ○
+ 4 ○ ○ ○ ● ○ ○ ○
+ 5 ○ ○ ○ ○ ○ ○ ○
+ 6     ○ ○ ○    
+ 7     ○ ○ ○    
+
+  1: (2,4) right
+  2: (3,2) down
+  3: (5,2) left
+  4: (1,3) right
+  5: (1,5) up
+  6: (5,4) up
+  7: (4,3) left
+  8: (5,6) up
+  9: (5,1) down
+ 10: (1,3) right
+ 11: (5,4) up
+ 12: (4,4) left
+ 13: (4,6) up
+ 14: (2,5) right
+ 15: (4,4) down
+ 16: (3,7) up
+ 17: (3,1) right
+ 18: (3,2) down
+ 19: (5,7) left
+ 20: (3,4) down
+ 21: (3,7) up
+ 22: (7,4) left
+ 23: (5,1) down
+ 24: (5,4) up
+ 25: (7,5) left
+ 26: (7,3) left
+ 27: (5,2) down
+ 28: (5,4) down
+ 29: (5,6) left
+ 30: (3,6) up
+ 31: (2,4) right
+
+The program's default behavior is to run until it finds a solution, at which
+time it will display the solution and also provide histogram results on all
+the games run. Here's a sample histogram for 2 billion games:
+
+ 1 peg,          57 times (1:35087719)
+ 2 pegs,     155653 times (1:12849)
+ 3 pegs,    6024209 times (1:332)
+ 4 pegs,   61339534 times (3.1%)
+ 5 pegs,  159770888 times (8.0%)
+ 6 pegs,  326958204 times (16.3%)
+ 7 pegs,  493277019 times (24.7%)
+ 8 pegs,  399175775 times (20.0%)
+ 9 pegs,  300886949 times (15.0%)
+10 pegs,  153065263 times (7.7%)
+11 pegs,   50972605 times (2.5%)
+12 pegs,   19717998 times (1:101)
+13 pegs,    8269238 times (1:242)
+14 pegs,    2880198 times (1:694)
+15 pegs,    1325801 times (1:1509)
+16 pegs,     347413 times (1:5757)
+17 pegs,     532024 times (1:3759)
+18 pegs,     214652 times (1:9317)
+19 pegs,     114805 times (1:17421)
+21 pegs,     137855 times (1:14508)
+22 pegs,      19462 times (1:102764)
+26 pegs,   14814398 times (1:135)
+
+It is possible to specify a game count as an argument to the program and it
+will terminate after that many games whether or not solutions were found
+(although each solution found will be displayed). If only a single game
+is requested then the final board position and the game sequence will be
+displayed for that one game.
+
+The program is a single C file so it should be trivial to build. On Linux:
+
+  $ gcc -O3 peg.c -o peg
+
